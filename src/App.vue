@@ -47,7 +47,7 @@ const onAlert = (type:string, msg:string) => {
 
 const onAlertClose = ()=>{
   alertShow.value = false
-} 
+}
 </script>
 
 <template>
@@ -75,7 +75,7 @@ const onAlertClose = ()=>{
 .tg-move,
 .tg-enter-active,
 .tg-leave-active {
-  transition: all 0.5s ease;
+  transition: all 0.5s ease-in-out;
 }
 
 .tg-enter-from{
