@@ -1,4 +1,4 @@
-# WALL-E-Detection
+# WALL-E-Detector
 Enhancing Depression Detection in Social Media using Multimodal methods: A Scalable Approach for Improved Accuracy and Efficiency
 ## Web Demo
 
