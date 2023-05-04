@@ -47,7 +47,7 @@ const onAlert = (type:string, msg:string) => {
 
 const onAlertClose = ()=>{
   alertShow.value = false
-}
+} 
 </script>
 
 <template>
