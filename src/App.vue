@@ -7,6 +7,7 @@ let outcome=ref(false)
 let running = ref(null)
 let alertShow = ref(false)
 onMounted(() => {
+  onAlert("warning", 'Connecting to server...')
   let running = ref(false)
   axios
     .get('/api/test')
@@ -15,9 +16,6 @@ onMounted(() => {
       if(res.data['message']){
         running.value = true
         onAlert("success", 'Server running!')
-      }else{
-        running.value = false
-        onAlert('error', 'Server can not connect!')
       }
     })
     .catch((err) => {
@@ -30,23 +28,29 @@ onMounted(() => {
 let aType:"success" | "normal" | "error" | "warning" | "info" | undefined = undefined
 let aMsg = ref('')
 
-const computeStart = () => {return outcome.value}
-let outcomeData = reactive([0.783, 0.112, 0.105])
-
 const getOutcome = () => {
   outcome.value = !outcome.value
   onAlert('success', 'Get outcome successfully!')
-
 }
 
 const onAlert = (type:string, msg:string) => {
+  alertShow.value = false
   aType = type
   aMsg.value = msg
-  alertShow.value = true
+  setTimeout(() => {
+    alertShow.value = true
+  }, 0);
 }
 
 const onAlertClose = ()=>{
   alertShow.value = false
+}
+
+let outcomeData = reactive([])
+const onOutcome = (data:any) => {
+  // data 去掉两边的括号, 并且每一项保留三位小数
+  outcomeData = data.slice(1, data.length-1).split(',').map((item:string)=>Number(item).toFixed(3))
+  outcome.value = !outcome.value
 }
 </script>
 
@@ -54,20 +58,20 @@ const onAlertClose = ()=>{
   <div id="container">
     <div id="header">
       <Transition name="header" appear>
-        <a-alert @close="onAlertClose" banner closable v-if="alertShow" :type=aType> {{ aMsg }} </a-alert>
+        <a-alert style="top: 0.5rem" @close="onAlertClose" banner closable v-if="alertShow" :type=aType> {{ aMsg }} </a-alert>
       </Transition>
     </div>
     <div id="body">
       <TransitionGroup name="tg" tag="ul">
         <li id="detector" key="li-dec">
-            <Detector @alert="onAlert"/>
+            <Detector @alert="onAlert" @outcome="onOutcome"/>
         </li>
         <li id="outcome" v-if="outcome" key="li-out">
-            <Outcome :start="computeStart" :data="outcomeData"/>
+            <Outcome :data="outcomeData"/>
         </li>
       </TransitionGroup>
     </div>
-    <a-button @click="getOutcome">test</a-button>
+    <!-- <a-button @click="getOutcome">test</a-button> -->
   </div>
 </template>
 
@@ -112,16 +116,19 @@ const onAlertClose = ()=>{
   flex-direction: column;
 }
 #header{
+  top: -10px;
   width: 80vw;
-  height: 5vh;
+  height: 3rem;
 }
 #body{
   display: flex;
   justify-content: center;
   flex-wrap: nowrap;
-  width:100vw;
+  width:90vw;
   height:85vh;
   transition: 0.4s;
+  border-radius: 15px;
+  border: dashed #989;
 }
 #detector{
   width: 60vw;
